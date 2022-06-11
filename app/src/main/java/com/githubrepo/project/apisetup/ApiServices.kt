@@ -14,7 +14,7 @@ import java.net.URL
 
 interface ApiServices {
 
-    @GET(NetworkConstants.USER_NAME + NetworkConstants.REPO_NAME + "pulls/")
+    @GET(NetworkConstants.USER_NAME + NetworkConstants.REPO_NAME + "pulls")
     fun getUserClosedPR(
         @Query(value = "state") state: String,
         @Query("per_page") per_page: Int
