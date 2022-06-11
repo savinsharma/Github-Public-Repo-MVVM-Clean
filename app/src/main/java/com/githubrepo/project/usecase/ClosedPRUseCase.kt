@@ -16,8 +16,8 @@ class ClosedPRUseCase @Inject constructor(private val closedPRRepository: Closed
         data class Failure(val throwable: Throwable) : ClosedPRResult()
     }
 
-    fun makeGetClosePRAPICall(state: String, per_page: Int): Observable<ClosedPRResult> {
-        return closedPRRepository.makeGetClosePRAPICall(state, per_page)
+    fun makeGetClosePRAPICall(state: String, per_page: Int, page : Int): Observable<ClosedPRResult> {
+        return closedPRRepository.makeGetClosePRAPICall(state, per_page, page)
             .toObservable().map {
                 ClosedPRResult.Success(
                     it

@@ -9,7 +9,7 @@ import javax.inject.Inject
  * */
 class ApiServiceImplementation @Inject constructor(private val apiInterface: ApiServices) {
 
-    fun getClosedPRData(state: String, per_page: Int): Single<List<ClosePullRequestResponse>> {
-        return apiInterface.getUserClosedPR(state, per_page)
+    fun getClosedPRData(state: String, per_page: Int, page: Int): Single<List<ClosePullRequestResponse>> {
+        return apiInterface.getUserClosedPR(state, per_page, page)
     }
 }
