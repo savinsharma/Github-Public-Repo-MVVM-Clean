@@ -11,6 +11,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -21,20 +22,23 @@ import javax.inject.Singleton
 object NetworkModule {
 
     @Provides
+    @Singleton
+    fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+
+    @Provides
     fun provideOkHttpClient(
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        interceptor: HttpLoggingInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .connectTimeout(NetworkConstants.NetworkTimeOut.CONNECTION_TIME_OUT, TimeUnit.MINUTES)
             .readTimeout(NetworkConstants.NetworkTimeOut.READ_TIME_OUT, TimeUnit.MINUTES)
             .writeTimeout(NetworkConstants.NetworkTimeOut.WRITE_TIME_OUT, TimeUnit.MINUTES)
             .retryOnConnectionFailure(false).addInterceptor { chain ->
-                val newRequest = chain.request().newBuilder()
-                    .addHeader("accept", "application/json")
-                    .addHeader("Content-Type", "application/json")
-                    .build()
+                val newRequest = chain.request().newBuilder().build()
                 chain.proceed(newRequest)
-            }.build()
+            }.addInterceptor(interceptor).build()
     }
 
     @Singleton
