@@ -1,11 +1,11 @@
 package com.githubrepo.project.activity
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.githubrep.project.R
 import com.githubrep.project.databinding.ActivityMainBinding
 import com.githubrepo.project.adapter.ClosedPRListAdapter
@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     private val state = "closed"
     private var page = 1
     private var lastpageCalled = false
+    private var closedPRListMain : ArrayList<ClosePullRequestResponse> = arrayListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,31 +37,42 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getClosedPRListAPI() {
+        activityMainBinding.progressBar.isIndeterminate = true
+        activityMainBinding.progressBar.visibility = View.VISIBLE
+
         closedPRViewModel.boundClosedPRListAPI(state, per_page, page)
+
         closedPRViewModel.closedPRListResponse.observe(this) {
             if (!it.isNullOrEmpty()) {
+
+                val previousIndex = closedPRListMain.size
                 lastpageCalled = false
-                setOrUpdateAdapter(it)
+                closedPRListMain.addAll(it)
+                val newIndex = closedPRListMain.size
+
+                setOrUpdateAdapter(closedPRListMain, previousIndex, newIndex)
             } else {
                 lastpageCalled = true
             }
         }
         closedPRViewModel.showErrorGettingData.observe(this) {
-            println("APi - Error - ${it.message} ")
+            println("API - Error - $it ")
+            activityMainBinding.progressBar.visibility = View.GONE
             lastpageCalled = true
         }
     }
 
-    private fun setOrUpdateAdapter(closedPRList: List<ClosePullRequestResponse>) {
+    private fun setOrUpdateAdapter(closedPRList: ArrayList<ClosePullRequestResponse>, previousIndex: Int, newIndex : Int) {
         // Setting up Adapter
         if (closedPRListAdapter == null) {
             closedPRListAdapter = ClosedPRListAdapter(closedPRList)
             activityMainBinding.rvClosedPR.adapter = closedPRListAdapter
         } else {
             // Notify the adapter for pagination
-            //closedPRListAdapter?.notifyItemRangeChanged()
+            closedPRListAdapter?.notifyItemRangeChanged(previousIndex, newIndex)
         }
         page++
+        activityMainBinding.progressBar.visibility = View.GONE
     }
 
     override fun onDestroy() {
