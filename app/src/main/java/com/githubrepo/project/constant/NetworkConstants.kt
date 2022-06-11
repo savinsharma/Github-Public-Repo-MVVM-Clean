@@ -8,6 +8,8 @@ object NetworkConstants {
         const val WRITE_TIME_OUT = 10L
     }
 
-    const val BASE_URL = ""
+    const val BASE_URL = "https://api.github.com/repos/"
+    const val USER_NAME = "savinsharma/"
+    const val REPO_NAME = "Github-public-repo-MVVM-Clean/"
 
 }
