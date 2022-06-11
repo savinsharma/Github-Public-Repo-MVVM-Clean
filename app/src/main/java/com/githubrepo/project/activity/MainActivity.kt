@@ -1,6 +1,8 @@
 package com.githubrepo.project.activity
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -32,10 +34,11 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         initViews()
         observeListData()
-        getClosedPRListAPI(page)
+        getClosedPRListAPI(page, true)
     }
 
     private fun initViews() {
+
         linearLayoutManager = LinearLayoutManager(this)
         activityMainBinding.rvClosedPR.layoutManager = linearLayoutManager
         activityMainBinding.rvClosedPR.addOnScrollListener(object :
@@ -51,19 +54,24 @@ class MainActivity : AppCompatActivity() {
                     if (!lastpageCalled) {
                         page++
                         getClosedPRListAPI(page)
+                    }else{
+                        hideLoader()
                     }
+                } else {
+                    hideLoader()
                 }
             }
         })
     }
 
-    private fun getClosedPRListAPI(page : Int) {
-        activityMainBinding.progressBar.isIndeterminate = true
-        activityMainBinding.progressBar.visibility = View.VISIBLE
+    private fun getClosedPRListAPI(page: Int, showFullScreenLoader : Boolean = false) {
+        if(showFullScreenLoader)
+            activityMainBinding.progressBar.visibility = View.VISIBLE
+        
         closedPRViewModel.boundClosedPRListAPI(state, per_page, page)
     }
 
-    private fun observeListData(){
+    private fun observeListData() {
         closedPRViewModel.closedPRListResponse.observe(this) {
             if (!it.isNullOrEmpty()) {
 
@@ -75,11 +83,13 @@ class MainActivity : AppCompatActivity() {
                 setOrUpdateAdapter(closedPRListMain, previousIndex, newIndex)
             } else {
                 lastpageCalled = true
+                hideLoader()
             }
         }
         closedPRViewModel.showErrorGettingData.observe(this) {
             println("API - Error - $it ")
             activityMainBinding.progressBar.visibility = View.GONE
+            hideLoader()
             lastpageCalled = true
         }
     }
@@ -92,16 +102,23 @@ class MainActivity : AppCompatActivity() {
         // Setting up Adapter
         if (closedPRListAdapter == null) {
             closedPRListAdapter = ClosedPRListAdapter(this, closedPRList,
-                onLastPositionReached ={
+                onLastPositionReached = {
                     // we can use this to show loading indicator at the bottom
+                    activityMainBinding.progressBarPagination.visibility = View.VISIBLE
                 })
             activityMainBinding.rvClosedPR.adapter = closedPRListAdapter
         } else {
             // Notify the adapter for pagination
             closedPRListAdapter?.notifyItemRangeChanged(previousIndex, newIndex)
-            //closedPRListAdapter?.notifyDataSetChanged()
         }
+        hideLoader()
+    }
+
+    private fun hideLoader() {
         activityMainBinding.progressBar.visibility = View.GONE
+        Handler(Looper.getMainLooper()).postDelayed({
+            activityMainBinding.progressBarPagination.visibility = View.GONE
+        }, 500)
     }
 
     override fun onDestroy() {
