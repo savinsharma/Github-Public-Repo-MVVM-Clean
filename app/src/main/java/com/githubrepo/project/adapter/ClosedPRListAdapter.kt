@@ -58,12 +58,12 @@ class ClosedPRListAdapter(
                  * */
                 tvPRCreatedDate.text = context.getString(R.string.created_at)
                 tvPRCreatedDate.append(
-                    closePullRequestResponse.createdAt?.replace("T0", " ")?.replace("Z", "")
+                    closePullRequestResponse.createdAt?.replace("T", " ")?.replace("Z", "")
                 )
 
                 tvPRCloseDate.text = context.getString(R.string.closed_at)
                 tvPRCloseDate.append(
-                    closePullRequestResponse.closedAt?.replace("T0", " ")?.replace("Z", "")
+                    closePullRequestResponse.closedAt?.replace("T", " ")?.replace("Z", "")
                 )
             }
         }
