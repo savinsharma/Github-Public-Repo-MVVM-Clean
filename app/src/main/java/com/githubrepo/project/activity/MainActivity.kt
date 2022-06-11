@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     private fun setOrUpdateAdapter(closedPRList: ArrayList<ClosePullRequestResponse>, previousIndex: Int, newIndex : Int) {
         // Setting up Adapter
         if (closedPRListAdapter == null) {
-            closedPRListAdapter = ClosedPRListAdapter(closedPRList)
+            closedPRListAdapter = ClosedPRListAdapter(this, closedPRList)
             activityMainBinding.rvClosedPR.adapter = closedPRListAdapter
         } else {
             // Notify the adapter for pagination
