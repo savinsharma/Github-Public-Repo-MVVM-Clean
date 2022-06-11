@@ -10,9 +10,11 @@ import com.githubrep.project.R
 import com.githubrep.project.databinding.LayoutSingleItemViewClosePrBinding
 import com.githubrepo.project.model.ClosePullRequestResponse
 
-class ClosedPRListAdapter(private val context: Context,
-                          private val closedPRList: ArrayList<ClosePullRequestResponse>,
-                          val onLastPositionReached : (Int)-> Unit) :
+class ClosedPRListAdapter(
+    private val context: Context,
+    private val closedPRList: ArrayList<ClosePullRequestResponse>,
+    val onLastPositionReached: (Int) -> Unit
+) :
     RecyclerView.Adapter<ClosedPRListAdapter.ClosedPRListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClosedPRListViewHolder {
@@ -50,11 +52,19 @@ class ClosedPRListAdapter(private val context: Context,
                 tvPRTitle.text = context.getString(R.string.pr_title)
                 tvPRTitle.append(closePullRequestResponse.title)
 
+                /**
+                 * This we can optimize by changing the time to milli and then convert it into the format we want.
+                 * RN, I am just replacing the extra string to make it look readable.
+                 * */
                 tvPRCreatedDate.text = context.getString(R.string.created_at)
-                tvPRCreatedDate.append(closePullRequestResponse.createdAt)
+                tvPRCreatedDate.append(
+                    closePullRequestResponse.createdAt?.replace("T0", " ")?.replace("Z", "")
+                )
 
                 tvPRCloseDate.text = context.getString(R.string.closed_at)
-                tvPRCloseDate.append(closePullRequestResponse.closedAt)
+                tvPRCloseDate.append(
+                    closePullRequestResponse.closedAt?.replace("T0", " ")?.replace("Z", "")
+                )
             }
         }
     }
