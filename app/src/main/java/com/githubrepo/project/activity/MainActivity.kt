@@ -31,7 +31,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         activityMainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main)
         initViews()
-        getClosedPRListAPI()
+        observeListData()
+        getClosedPRListAPI(page)
     }
 
     private fun initViews() {
@@ -49,19 +50,20 @@ class MainActivity : AppCompatActivity() {
                 if ((visibleItemCount + firstVisibileItem) >= totalItemCount) {
                     if (!lastpageCalled) {
                         page++
-                        getClosedPRListAPI()
+                        getClosedPRListAPI(page)
                     }
                 }
             }
         })
     }
 
-    private fun getClosedPRListAPI() {
+    private fun getClosedPRListAPI(page : Int) {
         activityMainBinding.progressBar.isIndeterminate = true
         activityMainBinding.progressBar.visibility = View.VISIBLE
-
         closedPRViewModel.boundClosedPRListAPI(state, per_page, page)
+    }
 
+    private fun observeListData(){
         closedPRViewModel.closedPRListResponse.observe(this) {
             if (!it.isNullOrEmpty()) {
 
