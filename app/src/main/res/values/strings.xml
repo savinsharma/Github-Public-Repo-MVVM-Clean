@@ -2,4 +2,6 @@
     <string name="app_name">Github Public Repo MVVM Clean</string>
     <string name="created_at">"Created At: "</string>
     <string name="closed_at">"Closed at: "</string>
+    <string name="pr_title">"PR Title: "</string>
+    <string name="user">"User: "</string>
 </resources>
