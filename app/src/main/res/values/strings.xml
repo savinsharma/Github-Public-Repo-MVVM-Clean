@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Github Public Repo MVVM Clean</string>
+    <string name="created_at">"Created At: "</string>
+    <string name="closed_at">"Closed at: "</string>
 </resources>
