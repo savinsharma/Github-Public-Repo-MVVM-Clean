@@ -21,8 +21,8 @@ class ClosedPRViewModel @Inject constructor(private val closedPRUseCase: ClosedP
      * Method to initiate userList api flow and wait for the response using subscriber and observer
      *
      */
-    fun boundClosedPRListAPI(state: String, per_page: Int) {
-        closedPRUseCase.makeGetClosePRAPICall(state, per_page)
+    fun boundClosedPRListAPI(state: String, per_page: Int, page: Int) {
+        closedPRUseCase.makeGetClosePRAPICall(state, per_page, page)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { handleResultOfClosedPRAPI(it) }

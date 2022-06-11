@@ -13,8 +13,8 @@ import javax.inject.Inject
 class ClosedPRRepository @Inject constructor(
     private val apiServiceImplementation: ApiServiceImplementation) {
 
-    fun makeGetClosePRAPICall(state: String, per_page: Int) : Single<List<ClosePullRequestResponse>> {
-        return apiServiceImplementation.getClosedPRData(state, per_page)
+    fun makeGetClosePRAPICall(state: String, per_page: Int, page : Int) : Single<List<ClosePullRequestResponse>> {
+        return apiServiceImplementation.getClosedPRData(state, per_page, page)
     }
 
 }
