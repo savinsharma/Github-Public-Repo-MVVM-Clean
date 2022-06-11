@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.githubrep.project.R
 import com.githubrep.project.databinding.ActivityMainBinding
 import com.githubrepo.project.adapter.ClosedPRListAdapter
+import com.githubrepo.project.constant.Constant
 import com.githubrepo.project.model.ClosePullRequestResponse
 import com.githubrepo.project.viewmodel.ClosedPRViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,8 +23,6 @@ class MainActivity : AppCompatActivity() {
     private val closedPRViewModel: ClosedPRViewModel by viewModels()
     private lateinit var activityMainBinding: ActivityMainBinding
     private var closedPRListAdapter: ClosedPRListAdapter? = null
-    private val per_page = 10
-    private val state = "closed"
     private var page = 1
     private var lastpageCalled = false
     private var closedPRListMain: ArrayList<ClosePullRequestResponse> = arrayListOf()
@@ -67,8 +66,8 @@ class MainActivity : AppCompatActivity() {
     private fun getClosedPRListAPI(page: Int, showFullScreenLoader : Boolean = false) {
         if(showFullScreenLoader)
             activityMainBinding.progressBar.visibility = View.VISIBLE
-        
-        closedPRViewModel.boundClosedPRListAPI(state, per_page, page)
+
+        closedPRViewModel.boundClosedPRListAPI(Constant.PR_STATE, Constant.PAGE_LIMIT, page)
     }
 
     private fun observeListData() {
