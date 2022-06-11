@@ -36,13 +36,15 @@ class ClosedPRListAdapter(private val context: Context, private val closedPRList
         fun bind(closePullRequestResponse: ClosePullRequestResponse) {
             layoutSingleItemViewClosePrBinding?.apply {
                 closePullRequestResponse.user.let {
-                    tvUserName.text = closePullRequestResponse.user?.login
+                    tvUserName.text = context.getString(R.string.user)
+                    tvUserName.append(closePullRequestResponse.user?.login)
                     val userImage = closePullRequestResponse.user?.avatarUrl
                     Glide.with(context)
                         .load(userImage)
                         .into(ivUserImage)
                 }
-                tvPRTitle.text = closePullRequestResponse.title
+                tvPRTitle.text = context.getString(R.string.pr_title)
+                tvPRTitle.append(closePullRequestResponse.title)
 
                 tvPRCreatedDate.text = context.getString(R.string.created_at)
                 tvPRCreatedDate.append(closePullRequestResponse.createdAt)
