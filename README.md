@@ -2,8 +2,9 @@
 
 Structure
 1. MVVM clean pattern with repository structure
-   Hierarchy
-   Activity/Fragment -> ViewModel Class -> Use case Class -> Repository Class -> APIImplementation Class -> API Service
+
+Hierarchy
+1. Activity/Fragment -> ViewModel Class -> Use case Class -> Repository Class -> APIImplementation Class -> API Service
 
 Dependency used
 1. Retrofit -> API call
