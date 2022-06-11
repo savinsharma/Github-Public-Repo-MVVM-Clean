@@ -10,7 +10,9 @@ import com.githubrep.project.R
 import com.githubrep.project.databinding.LayoutSingleItemViewClosePrBinding
 import com.githubrepo.project.model.ClosePullRequestResponse
 
-class ClosedPRListAdapter(private val context: Context, private val closedPRList: ArrayList<ClosePullRequestResponse>) :
+class ClosedPRListAdapter(private val context: Context,
+                          private val closedPRList: ArrayList<ClosePullRequestResponse>,
+                          val onLastPositionReached : (Int)-> Unit) :
     RecyclerView.Adapter<ClosedPRListAdapter.ClosedPRListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClosedPRListViewHolder {
@@ -20,6 +22,8 @@ class ClosedPRListAdapter(private val context: Context, private val closedPRList
 
     override fun onBindViewHolder(holder: ClosedPRListViewHolder, position: Int) {
         holder.bind(closedPRList[position])
+        if (position == closedPRList.size - 1)
+            onLastPositionReached(position)
     }
 
     override fun getItemCount(): Int {
