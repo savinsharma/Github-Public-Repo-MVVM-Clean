@@ -6,6 +6,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.githubrep.project.R
 import com.githubrep.project.databinding.ActivityMainBinding
 import com.githubrepo.project.adapter.ClosedPRListAdapter
@@ -23,7 +24,8 @@ class MainActivity : AppCompatActivity() {
     private val state = "closed"
     private var page = 1
     private var lastpageCalled = false
-    private var closedPRListMain : ArrayList<ClosePullRequestResponse> = arrayListOf()
+    private var closedPRListMain: ArrayList<ClosePullRequestResponse> = arrayListOf()
+    private var linearLayoutManager: LinearLayoutManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +35,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initViews() {
-        activityMainBinding.rvClosedPR.layoutManager = LinearLayoutManager(this)
+        linearLayoutManager = LinearLayoutManager(this)
+        activityMainBinding.rvClosedPR.layoutManager = linearLayoutManager
+        activityMainBinding.rvClosedPR.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                val visibleItemCount = linearLayoutManager?.childCount ?: 0
+                val totalItemCount = linearLayoutManager?.itemCount ?: 0
+                val firstVisibileItem = linearLayoutManager?.findFirstVisibleItemPosition() ?: 0
+
+                if ((visibleItemCount + firstVisibileItem) >= totalItemCount) {
+                    if (!lastpageCalled) {
+                        page++
+                        getClosedPRListAPI()
+                    }
+                }
+            }
+        })
     }
 
     private fun getClosedPRListAPI() {
@@ -62,16 +82,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setOrUpdateAdapter(closedPRList: ArrayList<ClosePullRequestResponse>, previousIndex: Int, newIndex : Int) {
+    private fun setOrUpdateAdapter(
+        closedPRList: ArrayList<ClosePullRequestResponse>,
+        previousIndex: Int,
+        newIndex: Int
+    ) {
         // Setting up Adapter
         if (closedPRListAdapter == null) {
-            closedPRListAdapter = ClosedPRListAdapter(this, closedPRList)
+            closedPRListAdapter = ClosedPRListAdapter(this, closedPRList,
+                onLastPositionReached ={
+                    // we can use this to show loading indicator at the bottom
+                })
             activityMainBinding.rvClosedPR.adapter = closedPRListAdapter
         } else {
             // Notify the adapter for pagination
             closedPRListAdapter?.notifyItemRangeChanged(previousIndex, newIndex)
+            //closedPRListAdapter?.notifyDataSetChanged()
         }
-        page++
         activityMainBinding.progressBar.visibility = View.GONE
     }
 
